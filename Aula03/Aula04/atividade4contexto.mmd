@@ -1,0 +1,25 @@
+# Atividade - Sistema de Vendas e Estoque (Modelo C4 Completo - Aula 4)
+
+Este documento contém os 4 níveis do Modelo C4 desenvolvidos em linguagem **Mermaid** (sem ícones e utilizando `subgraph`), prontos para uso e visualização no VS Code.
+
+---
+
+## 1. Diagrama C4 - Nível 1: Contexto
+
+Apresenta os atores do sistema (Vendedor, Administrador e Equipe de Estoque) e a fronteira do sistema principal.
+
+```mermaid
+graph TB
+    subgraph Atores["Atores do Sistema"]
+        Vendedor["Vendedor<br/>(Registra pedidos presenciais / telefone)"]
+        Admin["Administrador<br/>(Cadastra e remove produtos)"]
+        Estoquista["Equipe de Estoque<br/>(Controla entradas e baixas)"]
+    end
+
+    subgraph SistemaBoundary["Fronteira do Sistema"]
+        SistemaVendas["Sistema de Gestão de Vendas e Estoque<br/>(Processa pedidos, produtos e controle de saldo)"]
+    end
+
+    Vendedor -->|Registra pedidos de venda| SistemaVendas
+    Admin -->|Gerencia catálogo de produtos| SistemaVendas
+    Estoquista -->|Registra entradas e dá baixa no estoque| SistemaVendas
