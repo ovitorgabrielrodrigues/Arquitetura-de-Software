@@ -1,0 +1,48 @@
+graph TB
+    subgraph USERS["Usuarios"]
+        P["Paciente"]
+        PS["Psicologo"]
+        R["Recepcionista"]
+    end
+
+    subgraph SYSTEM_BOUNDARY["Fronteira: PsySystem"]
+        subgraph FRONTEND_LAYER["Camada de Apresentacao"]
+            WEB["Aplicacao Web<br/>[React / TypeScript]<br/>Interface para navegadores web"]
+            MOB["Aplicativo Mobile<br/>[Flutter]<br/>App mobile para pacientes"]
+        end
+
+        subgraph BACKEND_LAYER["Camada de Aplicacao e Servicos"]
+            API["API REST Backend<br/>[Java / Spring Boot]<br/>Regras de negocio de agendamento e prontuarios"]
+        end
+
+        subgraph DATA_LAYER["Camada de Persistencia"]
+            DB[("Banco de Dados<br/>[PostgreSQL]<br/>Prontuarios criptografados e agendamentos")]
+            CACHE[("Cache e Mensageria<br/>[Redis]<br/>Sessoes ativas e filas de notificacao")]
+        end
+    end
+
+    subgraph EXTERNAL_SERVICES["Servicos Externos"]
+        GATEWAY["Gateway de Pagamento"]
+        NOTIF_API["API WhatsApp/E-mail"]
+    end
+
+    P -->|HTTPS| WEB
+    P -->|HTTPS| MOB
+    PS -->|HTTPS| WEB
+    R -->|HTTPS| WEB
+
+    WEB -->|JSON / HTTPS| API
+    MOB -->|JSON / HTTPS| API
+
+    API -->|JDBC / SQL| DB
+    API -->|RESP Protocol| CACHE
+
+    API -->|HTTPS / REST| GATEWAY
+    API -->|HTTPS / REST| NOTIF_API
+
+    classDef default fill:#ffffff,stroke:#333333,stroke-width:1px;
+    classDef boundary fill:#f8f9fa,stroke:#1a1a1a,stroke-width:2px;
+    classDef layer fill:#ffffff,stroke:#495057,stroke-width:1px;
+
+    class SYSTEM_BOUNDARY boundary;
+    class FRONTEND_LAYER,BACKEND_LAYER,DATA_LAYER layer;

@@ -1,0 +1,33 @@
+graph TB
+    subgraph USERS["Atores do Sistema"]
+        P["Paciente<br/>Agenda consultas e realiza pagamentos"]
+        PS["Psicologo / Terapeuta<br/>Gerencia prontuarios e agenda"]
+        R["Recepcionista / Admin<br/>Gerencia cadastros e agendamentos"]
+    end
+
+    subgraph BOUNDARY["Fronteira do Sistema"]
+        PSY["PsySystem<br/>Sistema central de gestão da clinica de psicologia"]
+    end
+
+    subgraph EXTERNAL["Sistemas Externos"]
+        PAY["Gateway de Pagamento<br/>Processa pagamentos (PIX / Cartao)"]
+        NOTIF["Servico de Notificacao<br/>Envia confirmacoes via WhatsApp/E-mail"]
+        CAL["Google Calendar API<br/>Sincroniza agenda dos psicologos"]
+    end
+
+    P -->|Agenda consultas e paga| PSY
+    PS -->|Registra prontuarios e acessa agenda| PSY
+    R -->|Gerencia agendamentos e cadastros| PSY
+
+    PSY -->|Envia cobrancas| PAY
+    PSY -->|Dispara mensagens| NOTIF
+    PSY -->|Sincroniza eventos| CAL
+
+    classDef default fill:#ffffff,stroke:#333333,stroke-width:1px;
+    classDef boundary fill:#f8f9fa,stroke:#1a1a1a,stroke-width:2px;
+    classDef user fill:#f0f4f8,stroke:#102a43,stroke-width:1px;
+    classDef ext fill:#fff9db,stroke:#f59f00,stroke-width:1px;
+
+    class PSY boundary;
+    class P,PS,R user;
+    class PAY,NOTIF,CAL ext;

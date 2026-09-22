@@ -1,0 +1,28 @@
+graph TB
+    subgraph PRESENTATION_LAYER["Apresentacao / Entrada"]
+        Controller["AgendamentoController<br/>+ criarAgendamento(dto): ResponseEntity<br/>+ listarPorPaciente(id): List~Consulta~"]
+    end
+
+    subgraph DOMAIN_LAYER["Regra de Negocio"]
+        Service["AgendamentoService<br/>+ agendar(consulta): Consulta<br/>- validarHorarioDisponivel(data): boolean"]
+    end
+
+    subgraph DATA_ACCESS_LAYER["Acesso a Dados"]
+        Repository["AgendamentoRepository &lt;&lt;Interface&gt;&gt;<br/>+ findByPacienteId(pacienteId): List~Consulta~<br/>+ findByPsicologoIdAndDataHora(pId, data): Optional~Consulta~"]
+    end
+
+    subgraph ENTITY_LAYER["Modelo de Dominio"]
+        Consulta["Consulta<br/>- id: Long<br/>- dataHora: LocalDateTime<br/>- status: StatusConsulta<br/>- paciente: Paciente<br/>- psicologo: Psicologo"]
+        Status["StatusConsulta &lt;&lt;Enum&gt;&gt;<br/>AGENDADO<br/>REALIZADO<br/>CANCELADO"]
+    end
+
+    Controller -->|Injeta e Chama| Service
+    Service -->|Utiliza para persistir| Repository
+    Service -->|Manipula| Consulta
+    Repository -->|Retorna / Grava| Consulta
+    Consulta -->|Possui| Status
+
+    classDef default fill:#ffffff,stroke:#333333,stroke-width:1px;
+    classDef layer fill:#f8f9fa,stroke:#333333,stroke-width:1px;
+
+    class PRESENTATION_LAYER,DOMAIN_LAYER,DATA_ACCESS_LAYER,ENTITY_LAYER layer;

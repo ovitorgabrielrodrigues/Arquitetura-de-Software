@@ -1,0 +1,48 @@
+graph TB
+    subgraph CLIENT["Cliente"]
+        FRONTEND["Interface do Utilizador"]
+    end
+
+    subgraph BACKEND_BOUNDARY["Fronteira: API REST Backend (Spring Boot)"]
+        subgraph CONTROLLERS["Controllers (Entradas API)"]
+            AC["AgendamentoController<br/>[Spring RestController]<br/>Gestao de agendamentos e horarios"]
+            PC["ProntuarioController<br/>[Spring RestController]<br/>Gestao de prontuarios medicos"]
+            UC["UsuarioController<br/>[Spring RestController]<br/>Autenticacao e cadastro"]
+        end
+
+        subgraph SERVICES["Services (Logica de Negocio)"]
+            AS["AgendamentoService<br/>[Spring Component]<br/>Validacoes de horario e regras de agendamento"]
+            PSERVICE["ProntuarioService<br/>[Spring Component]<br/>Criptografia e gestao de registros clinicos"]
+            NS["NotificacaoService<br/>[Spring Component]<br/>Montagem e disparo de mensagens"]
+        end
+
+        subgraph REPOSITORIES["Repositories (Acesso a Dados)"]
+            AR["AgendamentoRepository<br/>[Spring Data JPA]<br/>Acesso a tabela de agendamentos"]
+            PR["ProntuarioRepository<br/>[Spring Data JPA]<br/>Acesso aos dados de prontuarios"]
+        end
+    end
+
+    subgraph DATA_PERSISTENCE["Persistencia e Integracoes"]
+        POSTGRES[("PostgreSQL")]
+        WHATSAPP["API Notificacao"]
+    end
+
+    FRONTEND -->|REST / JSON| AC
+    FRONTEND -->|REST / JSON| PC
+    FRONTEND -->|REST / JSON| UC
+
+    AC --> AS
+    PC --> PSERVICE
+
+    AS --> AR
+    AS --> NS
+    PSERVICE --> PR
+
+    AR --> POSTGRES
+    PR --> POSTGRES
+    NS --> WHATSAPP
+
+    classDef default fill:#ffffff,stroke:#333333,stroke-width:1px;
+    classDef boundary fill:#f8f9fa,stroke:#1a1a1a,stroke-width:2px;
+
+    class BACKEND_BOUNDARY boundary;
